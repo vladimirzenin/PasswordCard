@@ -13,5 +13,25 @@ namespace PasswordCardsManager
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            // 1
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            // 2
+
+            PasswordCardManager.Init();
+
+            base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            PasswordCardManager.UnInit();
+
+            base.OnExit(e);
+        }
     }
 }
