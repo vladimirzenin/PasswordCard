@@ -22,7 +22,7 @@
 
     <StackPanel>
         <DockPanel LastChildFill="True">
-            <Button Content="🛠" DockPanel.Dock="Left" ToolTip="Settings"/>
+            <Button x:Name="buttonSettings"  Content="🛠" DockPanel.Dock="Left" ToolTip="Settings"/>
             <Button Content="↴" DockPanel.Dock="Right" Width="32" IsDefault="True" ToolTip="Enter" Command="{Binding GetPass}"/>
             <TextBox x:Name="commandBox" TextWrapping="Wrap" Text="{Binding CommandString, UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.ToolTip>

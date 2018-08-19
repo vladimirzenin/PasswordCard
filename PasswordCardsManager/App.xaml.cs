@@ -29,7 +29,7 @@ namespace PasswordCardsManager
 
         protected override void OnExit(ExitEventArgs e)
         {
-            PasswordCardManager.UnInit();
+
 
             base.OnExit(e);
         }
