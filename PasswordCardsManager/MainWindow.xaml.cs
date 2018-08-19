@@ -22,18 +22,18 @@ namespace PasswordCardsManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        /// <summary>
-        /// Результат существует и успешно получен
-        /// </summary>
-        public bool isResult { get; private set; }
+        ///// <summary>
+        ///// Результат существует и успешно получен
+        ///// </summary>
+        //public bool isResult { get; private set; }
 
-        /// <summary>
-        /// Результат
-        /// </summary>
-        public string result { get; private set; }
+        ///// <summary>
+        ///// Результат
+        ///// </summary>
+        //public string result { get; private set; }
 
-        private string defautResultText = "Ctrl + C to copy; Ctrl+Enter to copy and hidden; Ready...";
-        private string defautErrorText = "no value; waiting for the right command";
+        //private string defautResultText = "Ctrl + C to copy; Ctrl+Enter to copy and hidden; Ready...";
+        //private string defautErrorText = "no value; waiting for the right command";
 
         //private System.Windows.Forms.NotifyIcon notifyIcon;
         //private System.Windows.Forms.ContextMenu contextMenu1;
@@ -46,12 +46,20 @@ namespace PasswordCardsManager
 
             InitializeComponent();
 
+            DataContext = new ApplicationViewModel();
+
             PasswordCardManager.mainWindow = this;
+
+            CreateTrayMenu();
+
+            SetFocusCommandBox();
+
+            return;
 
             //name.Text = PasswordCardManager.pass.publicName;
             //description.Text = PasswordCardManager.pass.publicDescription;
 
-            UpdateResult();
+            //UpdateResult();
 
             //StringBuilder privateInfo = new StringBuilder();
 
@@ -183,68 +191,68 @@ namespace PasswordCardsManager
             Application.Current.Shutdown();
         }
 
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            var input = e.Text;
-            string pattern = @"[0-9]|[.,; ]";
-            Regex rgx = new Regex(pattern, RegexOptions.IgnoreCase);
-            MatchCollection matches = rgx.Matches(input);
-            if (matches.Count == 0)
-            {
-                e.Handled = true;
-            }
+        //private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        //{
+        //    var input = e.Text;
+        //    string pattern = @"[0-9]|[.,; ]";
+        //    Regex rgx = new Regex(pattern, RegexOptions.IgnoreCase);
+        //    MatchCollection matches = rgx.Matches(input);
+        //    if (matches.Count == 0)
+        //    {
+        //        e.Handled = true;
+        //    }
 
-            // Нажатие enter
-            if (input == "\r")
-            {
-                CopyAndClose();
-            }
-        }
+        //    // Нажатие enter
+        //    if (input == "\r")
+        //    {
+        //        CopyAndClose();
+        //    }
+        //}
 
-        private void commandBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            UpdateResult();
-        }
+        //private void commandBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    UpdateResult();
+        //}
 
-        private void UpdateResult()
-        {
-            string error = ""; // todo подумать как использовать, сейчас никуда не выводится
+        //private void UpdateResult()
+        //{
+        //    string error = ""; // todo подумать как использовать, сейчас никуда не выводится
 
-            var matrixString = PasswordCardManager.GetPass(commandBox.Text, error);
+        //    var matrixString = PasswordCardManager.GetPass(commandBox.Text, error);
 
-            isResult = !string.IsNullOrEmpty(matrixString);
+        //    isResult = !string.IsNullOrEmpty(matrixString);
 
-            if (string.IsNullOrEmpty(commandBox.Text))
-            {
-                resultLabel.Text = defautResultText;
-            }
-            else if (isResult)
-            {
-                result = matrixString;
-                resultLabel.Text = matrixString;
-            }
-            else
-            {
-                result = null;
-                resultLabel.Text = defautErrorText;
-            }
-        }
+        //    if (string.IsNullOrEmpty(commandBox.Text))
+        //    {
+        //        resultLabel.Text = defautResultText;
+        //    }
+        //    else if (isResult)
+        //    {
+        //        result = matrixString;
+        //        resultLabel.Text = matrixString;
+        //    }
+        //    else
+        //    {
+        //        result = null;
+        //        resultLabel.Text = defautErrorText;
+        //    }
+        //}
 
-        private void CopyAndClose()
-        {
-            var isSuccess = PasswordCardManager.CopyAndHide();
-            if (!isSuccess)
-            {
-                resultLabel.Text = defautErrorText;
-            }
-        }
+        //private void CopyAndClose()
+        //{
+        //    var isSuccess = PasswordCardManager.CopyAndHide();
+        //    if (!isSuccess)
+        //    {
+        //        resultLabel.Text = defautErrorText;
+        //    }
+        //}
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateResult();
+        //private void Button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    UpdateResult();
 
-            CopyAndClose();
-        }
+        //    CopyAndClose();
+        //}
 
         private void Button_Click_Settings(object sender, RoutedEventArgs e)
         {
@@ -260,15 +268,6 @@ namespace PasswordCardsManager
         public void SetFocusCommandBox()
         {
             commandBox.Focus();
-        }
-
-        public void ClearResult()
-        {
-            isResult = false;
-            result = null;
-            resultLabel.Text = defautResultText;
-
-            commandBox.Text = "";
         }
     }
 }

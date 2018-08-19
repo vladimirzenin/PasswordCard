@@ -10,7 +10,6 @@ using System.Windows.Forms;
 
 namespace PasswordCardsManager
 {
-
     public static class HotKeyManager
     {
         [DllImport("user32", SetLastError = true)]
@@ -18,6 +17,13 @@ namespace PasswordCardsManager
 
         [DllImport("user32", SetLastError = true)]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        private static extern int CallNextHookEx(
+            int idHook,
+            int nCode,
+            IntPtr wParam,
+            IntPtr lParam);
 
         private static int _id = 0;
 
@@ -60,6 +66,7 @@ namespace PasswordCardsManager
         private static volatile MessageWindow _wnd;
         private static volatile IntPtr _hwnd;
         private static ManualResetEvent _windowReadyEvent = new ManualResetEvent(false);
+
         static HotKeyManager()
         {
             Thread messageLoop = new Thread(delegate ()
@@ -87,6 +94,8 @@ namespace PasswordCardsManager
                     HotKeyEventArgs e = new HotKeyEventArgs(m.LParam);
                     HotKeyManager.OnHotKeyPressed(e);
                 }
+
+                //CallNextHookEx(m.Msg, m.Msg, m.WParam, m.LParam); // это я приделал не помогает
 
                 base.WndProc(ref m);
             }

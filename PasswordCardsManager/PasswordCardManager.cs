@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
@@ -12,6 +13,8 @@ namespace PasswordCardsManager
 {
     public static class PasswordCardManager
     {
+        private static bool isInit;
+
         public static Pass pass;
 
         //public static System.Windows.Application WinApp { get; private set; }
@@ -24,6 +27,9 @@ namespace PasswordCardsManager
 
         public static void Init()
         {
+            if (isInit)
+                throw new Exception("Повторный вызов PasswordCardManager.Init запрещен");
+
             idRegisteredHotKeys = new List<int>();
 
             pass = Pass.Read();
@@ -35,6 +41,8 @@ namespace PasswordCardsManager
             }
 
             RegisterHotKeys();
+
+            isInit = true;
         }
 
         public static void UnInit()
@@ -45,7 +53,7 @@ namespace PasswordCardsManager
         private static void RegisterHotKeys()
         {
             // Скопировать результат
-            var id = HotKeyManager.RegisterHotKey(Keys.C, KeyModifiers.Control);
+            //var id = HotKeyManager.RegisterHotKey(Keys.C, KeyModifiers.Control);
             // Скопировать результат и закрыть форму
             var id2 = HotKeyManager.RegisterHotKey(Keys.Enter, KeyModifiers.Control);
             // Скрыть/показать форму
@@ -53,7 +61,7 @@ namespace PasswordCardsManager
 
             HotKeyManager.HotKeyPressed += new EventHandler<HotKeyEventArgs>(HotKeyManager_Pressed);
 
-            idRegisteredHotKeys.Add(id);
+            //idRegisteredHotKeys.Add(id);
             idRegisteredHotKeys.Add(id2);
             idRegisteredHotKeys.Add(id3);
         }
@@ -70,16 +78,17 @@ namespace PasswordCardsManager
         {
             if (e.Key == Keys.C)
             {
-                if (mainWindow.IsVisible
-                    && mainWindow.isResult)
-                {
-                    App.Current.Dispatcher.Invoke(
-                    () =>
+                App.Current.Dispatcher.Invoke(
+                () =>
+                    {
+                        if (mainWindow.IsVisible
+                            && mainWindow.IsActive
+                            && (mainWindow.DataContext as ApplicationViewModel).IsResult)
                         {
-                            System.Windows.Clipboard.SetDataObject(mainWindow.result);
+                            System.Windows.Clipboard.SetDataObject((mainWindow.DataContext as ApplicationViewModel).Result);
                         }
-                    );
-                }
+                    }
+                );
             }
             else if (e.Key == Keys.Enter)
             {
@@ -91,24 +100,21 @@ namespace PasswordCardsManager
             }
         }
 
-        public static bool CopyAndHide()
+        private static void CopyAndHide()
         {
-            if (mainWindow.IsVisible
-                && mainWindow.isResult)
-            {
-                App.Current.Dispatcher.Invoke(
-                    () =>
+            App.Current.Dispatcher.Invoke(
+                () =>
+                    {
+                        if (mainWindow.IsVisible
+                            && mainWindow.IsActive
+                            && (mainWindow.DataContext as ApplicationViewModel).IsResult)
                         {
-                            System.Windows.Clipboard.SetDataObject(mainWindow.result);
+                            System.Windows.Clipboard.SetDataObject((mainWindow.DataContext as ApplicationViewModel).Result);
                             ShowHide();
-                            mainWindow.ClearResult();
-
-                            return true;
+                            (mainWindow.DataContext as ApplicationViewModel).ClearResult();
                         }
-                    );
-            }
-
-            return false;
+                    }
+                );
         }
 
         private static void ShowHide()
@@ -144,7 +150,7 @@ namespace PasswordCardsManager
                 return null;
 
             char[] forsplit = new char[] { ' ', '.', ',', ';' };
-            string[] stringCommands = command.Split(forsplit);
+            string[] stringCommands = command.Split(forsplit, StringSplitOptions.RemoveEmptyEntries);
 
             if (stringCommands.Count() < 2)
             {

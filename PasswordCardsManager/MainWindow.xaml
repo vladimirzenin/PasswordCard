@@ -6,11 +6,25 @@
              xmlns:local="clr-namespace:PasswordCardsManager"
              mc:Ignorable="d" 
              Title="Password cards system" Width="310" SizeToContent="WidthAndHeight" MinWidth="300" MinHeight="73" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Height" Value="22" />
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="26" />
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="26" />
+        </Style>
+    </Window.Resources>
+
     <StackPanel>
         <DockPanel LastChildFill="True">
-            <Button Content="🛠" DockPanel.Dock="Left" Height="26" Click="Button_Click_Settings" ToolTip="Settings"/>
-            <Button Content="↴" DockPanel.Dock="Right" Height="26" Width="32" IsDefault="True" Click="Button_Click" ToolTip="Enter"/>
-            <TextBox x:Name="commandBox" TextWrapping="Wrap" Text="" Height="26" FontSize="16" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="commandBox_TextChanged">
+            <Button Content="🛠" DockPanel.Dock="Left" ToolTip="Settings"/>
+            <Button Content="↴" DockPanel.Dock="Right" Width="32" IsDefault="True" ToolTip="Enter" Command="{Binding GetPass}"/>
+            <TextBox x:Name="commandBox" TextWrapping="Wrap" Text="{Binding CommandString, UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.ToolTip>
                     <ToolTip>
                         <StackPanel>
@@ -24,7 +38,7 @@
 
             </TextBox>
         </DockPanel>
-        <TextBlock x:Name="resultLabel" DockPanel.Dock="Bottom" TextWrapping="Wrap">
+        <TextBlock x:Name="resultLabel" DockPanel.Dock="Bottom" TextWrapping="Wrap" Text="{Binding TextMessage, UpdateSourceTrigger=PropertyChanged}">
             <TextBlock.ToolTip>
                 <ToolTip>
                     <StackPanel>
