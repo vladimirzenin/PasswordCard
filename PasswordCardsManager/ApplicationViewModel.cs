@@ -120,7 +120,7 @@ namespace PasswordCardsManager
             CommandString = "";
         }
 
-        private string defautResultText = "Ctrl + C to copy; Ctrl+Enter to copy and hidden; Ready...";
+        private string defautResultText = "Ctrl+Enter to copy and hidden; Ready <X.Y.L.r>"; //"Ctrl + C to copy; Ctrl+Enter to copy and hidden; Ready...";
         private string defautErrorText = "no value; waiting for the right command";
 
         private RelayCommand getPass;
@@ -160,6 +160,8 @@ namespace PasswordCardsManager
             RegisterHotKeys();
 
             CreateTrayMenu();
+
+            TextMessage = defautResultText;
         }
 
         void UnInit()

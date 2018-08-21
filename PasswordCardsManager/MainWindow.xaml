@@ -42,9 +42,8 @@
             <TextBlock.ToolTip>
                 <ToolTip>
                     <StackPanel>
-                        <TextBlock>Ctrl+C to copy</TextBlock>
                         <TextBlock>Ctrl+Enter to copy and hidden this window</TextBlock>
-                        <TextBlock>Win+T to show or hide this window</TextBlock>
+                        <TextBlock>Alt+T to show or hide this window</TextBlock>
                     </StackPanel>
                 </ToolTip>
             </TextBlock.ToolTip>
